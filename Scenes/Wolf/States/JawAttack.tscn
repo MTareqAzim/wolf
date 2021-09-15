@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=2]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/animation_finished_transition_state_component.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Wolf/States/lunge.gd" type="Script" id=4]
+[ext_resource path="res://Utils/State Machine/State/State Components/delayed_activation_state_component.gd" type="Script" id=5]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/pressed_transition_state_component.gd" type="Script" id=6]
+[ext_resource path="res://Utils/Entity/State Components/Action Buffer/action_buffer_activate_state_component.gd" type="Script" id=7]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/transition_state_component.gd" type="Script" id=8]
+
+[node name="JawAttack" type="Node"]
+script = ExtResource( 1 )
+state_name = "jaw_attack"
+push_down = true
+overwrite = true
+dependencies = {
+"body": NodePath(""),
+"buffer": NodePath(""),
+"input": NodePath(""),
+"look": NodePath("")
+}
+variables = {
+"max_distance": 500
+}
+
+[node name="Lunge" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="Timer" type="Timer" parent="Lunge"]
+wait_time = 0.2
+one_shot = true
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="Jaw Attack Finished" type="Node" parent="Transitions"]
+script = ExtResource( 3 )
+animation = "jaw_attack"
+NEXT_STATE = "previous"
+
+[node name="Delay" type="Node" parent="Transitions"]
+script = ExtResource( 5 )
+delay = 0.5
+
+[node name="Timer" type="Timer" parent="Transitions/Delay"]
+
+[node name="Jaw Attack" type="Node" parent="Transitions/Delay"]
+script = ExtResource( 6 )
+ACTION = "heavy_attack"
+NEXT_STATE = "jaw_attack"
+
+[node name="Heavy Pressed" type="Node" parent="Transitions/Delay"]
+script = ExtResource( 7 )
+action_buffer_key = "buffer"
+action = "heavy_attack_pressed"
+frames = 20
+
+[node name="Jaw Attack" type="Node" parent="Transitions/Delay/Heavy Pressed"]
+script = ExtResource( 8 )
+NEXT_STATE = "jaw_attack"
+[connection signal="timeout" from="Lunge/Timer" to="Lunge" method="_on_Timer_timeout"]
+[connection signal="timeout" from="Transitions/Delay/Timer" to="Transitions/Delay" method="_on_Timer_timeout"]

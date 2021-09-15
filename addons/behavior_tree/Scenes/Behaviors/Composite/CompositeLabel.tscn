@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/composite_label.gd" type="Script" id=1]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/close.png" type="Texture" id=2]
+
+
+[node name="Label" type="Label"]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 91.0
+margin_bottom = 39.0
+rect_min_size = Vector2( 0, 15 )
+mouse_filter = 1
+text = "0."
+align = 2
+valign = 1
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Delete" type="TextureButton" parent="."]
+visible = false
+anchor_bottom = 1.0
+margin_left = 1.87596
+margin_top = 0.0801048
+margin_right = 12.876
+margin_bottom = -1.9199
+mouse_filter = 1
+texture_normal = ExtResource( 2 )
+expand = true
+stretch_mode = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="mouse_entered" from="." to="." method="_on_Label_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_Label_mouse_exited"]
+[connection signal="mouse_entered" from="Delete" to="." method="_on_Delete_mouse_entered"]
+[connection signal="pressed" from="Delete" to="." method="_on_Delete_pressed"]

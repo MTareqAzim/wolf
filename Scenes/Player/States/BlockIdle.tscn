@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/released_transition_state_component.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=3]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Update/Transitions/equals_transition_state_component.gd" type="Script" id=4]
+[ext_resource path="res://Utils/Entity/State Components/Look Direction/look_direction_state_component.gd" type="Script" id=5]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/pressed_transition_state_component.gd" type="Script" id=8]
+[ext_resource path="res://Utils/Entity/State Components/Stamina/fulfills_stamina_cost_state_component.gd" type="Script" id=9]
+[ext_resource path="res://Utils/Entity/State Components/Stamina/flash_stamina_bar_state_component.gd" type="Script" id=11]
+
+[node name="BlockIdle" type="Node"]
+script = ExtResource( 1 )
+state_name = "block_idle"
+push_down = true
+overwrite = true
+dependencies = {
+"body": NodePath(""),
+"buffer": NodePath(""),
+"hud": NodePath(""),
+"input": NodePath(""),
+"look": NodePath(""),
+"stamina": NodePath("")
+}
+variables = {
+"max_speed": 100,
+"roll_cost": 25.0
+}
+
+[node name="Look" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="RollCost" type="Node" parent="."]
+script = ExtResource( 11 )
+action = "roll"
+action_cost_key = "roll_cost"
+color = Color( 1, 0, 0, 1 )
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Block" type="Node" parent="Transitions"]
+script = ExtResource( 2 )
+ACTION = "block"
+NEXT_STATE = "unblock"
+
+[node name="BlockReleased" type="Node" parent="Transitions"]
+script = ExtResource( 4 )
+node_key = "input"
+FUNCTION_NAME = "is_action_pressed"
+has_args = true
+args = [ "block" ]
+equals = [ false ]
+NEXT_STATE = "unblock"
+
+[node name="Attack" type="Node" parent="Transitions"]
+script = ExtResource( 8 )
+ACTION = "attack"
+NEXT_STATE = "attack_a"
+
+[node name="RollCost" type="Node" parent="Transitions"]
+script = ExtResource( 9 )
+cost_key = "roll_cost"
+
+[node name="Roll" type="Node" parent="Transitions/RollCost"]
+script = ExtResource( 8 )
+ACTION = "roll"
+NEXT_STATE = "roll"

@@ -1,0 +1,84 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/composite.gd" type="Script" id=1]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/sequence.png" type="Texture" id=2]
+[ext_resource path="res://addons/behavior_tree/Themes/Normal/Component.tres" type="StyleBox" id=3]
+[ext_resource path="res://addons/behavior_tree/Themes/Selected/ComponentSelected.tres" type="StyleBox" id=4]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.121569, 0.145098, 0.192157, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.121569, 0.145098, 0.192157, 1 )
+
+[node name="Composite" type="GraphNode"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -53.0
+margin_top = -57.0
+margin_right = 53.5
+margin_bottom = 62.0
+mouse_filter = 1
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_styles/frame = ExtResource( 3 )
+custom_styles/selectedframe = ExtResource( 4 )
+custom_colors/title_color = Color( 1, 1, 1, 1 )
+custom_constants/port_offset = 0
+title = "Composite"
+show_close = true
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 0.756863, 0.207843, 0.207843, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 0.756863, 0.207843, 0.207843, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 0.756863, 0.207843, 0.207843, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 0.756863, 0.207843, 0.207843, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Icon" type="TextureRect" parent="."]
+margin_left = 31.0
+margin_top = 33.0
+margin_right = 76.0
+margin_bottom = 78.0
+rect_min_size = Vector2( 45, 45 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+
+[node name="HSeparator" type="HSeparator" parent="."]
+margin_left = 10.0
+margin_top = 79.0
+margin_right = 97.0
+margin_bottom = 83.0
+custom_styles/separator = SubResource( 1 )
+
+[node name="Add" type="Button" parent="."]
+margin_left = 10.0
+margin_top = 84.0
+margin_right = 97.0
+margin_bottom = 109.0
+rect_min_size = Vector2( 87, 25 )
+custom_styles/normal = SubResource( 2 )
+text = "Add +"
+[connection signal="close_request" from="." to="." method="_on_close_request"]
+[connection signal="minimum_size_changed" from="." to="." method="_on_minimum_size_changed"]
+[connection signal="pressed" from="Add" to="." method="_on_Add_pressed"]

@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/animation_finished_transition_state_component.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=3]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Enter/call_function_enter_state_component.gd" type="Script" id=4]
+
+[node name="Swipe" type="Node"]
+script = ExtResource( 1 )
+state_name = "swipe"
+push_down = true
+dependencies = {
+"body": NodePath("")
+}
+
+[node name="Stop" type="Node" parent="."]
+script = ExtResource( 4 )
+node_key = "body"
+FUNCTION_NAME = "set_target_velocity_2d"
+args = [ Vector2( 0, 0 ) ]
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Swipe Finished" type="Node" parent="Transitions"]
+script = ExtResource( 2 )
+animation = "swipe"
+NEXT_STATE = "previous"

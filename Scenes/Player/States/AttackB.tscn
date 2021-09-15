@@ -1,0 +1,85 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Enter/call_function_enter_state_component.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Entity/State Components/Stamina/replenish_stamina_state_component.gd" type="Script" id=3]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/animation_finished_transition_state_component.gd" type="Script" id=4]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=5]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/pressed_transition_state_component.gd" type="Script" id=6]
+[ext_resource path="res://Utils/State Machine/State/State Components/delayed_activation_state_component.gd" type="Script" id=7]
+[ext_resource path="res://Utils/Entity/State Components/Action Buffer/action_buffer_activate_state_component.gd" type="Script" id=8]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/transition_state_component.gd" type="Script" id=9]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Enter/call_function_variable_enter_state_component.gd" type="Script" id=10]
+
+[node name="Attack B" type="Node"]
+script = ExtResource( 1 )
+state_name = "attack_b"
+push_down = true
+overwrite = true
+dependencies = {
+"body": NodePath(""),
+"buffer": NodePath(""),
+"hitbox": NodePath(""),
+"stamina": NodePath("")
+}
+variables = {
+"damage": 13.0,
+"extent": 15,
+"regen_rate": 25.0
+}
+
+[node name="Stop" type="Node" parent="."]
+script = ExtResource( 2 )
+node_key = "body"
+FUNCTION_NAME = "set_target_velocity_2d"
+args = [ Vector2( 0, 0 ) ]
+
+[node name="StaminaRegen" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Damage" type="Node" parent="."]
+script = ExtResource( 10 )
+node_key = "hitbox"
+FUNCTION_NAME = "set_damage"
+variables = [ "damage" ]
+
+[node name="Hitbox Extent" type="Node" parent="."]
+script = ExtResource( 10 )
+node_key = "hitbox"
+FUNCTION_NAME = "set_extent"
+variables = [ "extent" ]
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="Left Animation End" type="Node" parent="Transitions"]
+script = ExtResource( 4 )
+animation = "left_attack_b"
+NEXT_STATE = "previous"
+
+[node name="Right Animation End" type="Node" parent="Transitions"]
+script = ExtResource( 4 )
+animation = "right_attack_b"
+NEXT_STATE = "previous"
+
+[node name="Roll Delay" type="Node" parent="Transitions"]
+script = ExtResource( 7 )
+delay = 0.5
+
+[node name="Timer" type="Timer" parent="Transitions/Roll Delay"]
+
+[node name="Roll" type="Node" parent="Transitions/Roll Delay"]
+script = ExtResource( 6 )
+ACTION = "roll"
+NEXT_STATE = "roll"
+
+[node name="Roll Pressed" type="Node" parent="Transitions/Roll Delay"]
+script = ExtResource( 8 )
+action_buffer_key = "buffer"
+action = "roll_pressed"
+frames = 18
+
+[node name="Roll" type="Node" parent="Transitions/Roll Delay/Roll Pressed"]
+script = ExtResource( 9 )
+NEXT_STATE = "roll"
+[connection signal="timeout" from="Transitions/Roll Delay/Timer" to="Transitions/Roll Delay" method="_on_Timer_timeout"]

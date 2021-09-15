@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=2]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/animation_finished_transition_state_component.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Player/States/roll.gd" type="Script" id=4]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Enter/call_function_variable_enter_state_component.gd" type="Script" id=6]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Enter/call_function_enter_state_component.gd" type="Script" id=7]
+
+[node name="Roll" type="Node"]
+script = ExtResource( 1 )
+state_name = "roll"
+push_down = true
+dependencies = {
+"body": NodePath(""),
+"hud": NodePath(""),
+"input": NodePath(""),
+"look": NodePath(""),
+"stamina": NodePath("")
+}
+variables = {
+"max_distance": 200,
+"stamina_cost": 30.0
+}
+
+[node name="ExhaustStamina" type="Node" parent="."]
+script = ExtResource( 6 )
+node_key = "stamina"
+FUNCTION_NAME = "exhaust_stamina"
+variables = [ "stamina_cost" ]
+
+[node name="StaminaBarFlash" type="Node" parent="."]
+script = ExtResource( 7 )
+node_key = "hud"
+FUNCTION_NAME = "stamina_bar_flash"
+args = [ Color( 1, 1, 1, 1 ) ]
+
+[node name="Roll" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="Timer" type="Timer" parent="Roll"]
+one_shot = true
+
+[node name="Transitioins" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="RightRoll" type="Node" parent="Transitioins"]
+script = ExtResource( 3 )
+animation = "right_roll"
+NEXT_STATE = "previous"
+
+[node name="LeftRoll" type="Node" parent="Transitioins"]
+script = ExtResource( 3 )
+animation = "left_roll"
+NEXT_STATE = "previous"
+[connection signal="timeout" from="Roll/Timer" to="Roll" method="_on_Timer_timeout"]

@@ -1,0 +1,121 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/Entity/State Components/Movement/move_state_component.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Entity/State Components/Look Direction/look_direction_state_component.gd" type="Script" id=3]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/released_transition_state_component.gd" type="Script" id=4]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Update/Transitions/equals_transition_state_component.gd" type="Script" id=5]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=6]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/pressed_transition_state_component.gd" type="Script" id=7]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Update/Transitions/not_equals_transition_state_component.gd" type="Script" id=8]
+[ext_resource path="res://Utils/Entity/State Components/Action Buffer/action_buffer_activate_state_component.gd" type="Script" id=9]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/transition_state_component.gd" type="Script" id=10]
+
+[node name="Run" type="Node"]
+script = ExtResource( 1 )
+state_name = "run"
+push_down = true
+dependencies = {
+"body": NodePath(""),
+"buffer": NodePath(""),
+"input": NodePath(""),
+"look": NodePath("")
+}
+variables = {
+"max_speed": 500
+}
+
+[node name="Move" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="Look" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 6 )
+
+[node name="Run" type="Node" parent="Transitions"]
+script = ExtResource( 4 )
+ACTION = "run"
+NEXT_STATE = "previous"
+
+[node name="Run2" type="Node" parent="Transitions"]
+script = ExtResource( 8 )
+node_key = "input"
+FUNCTION_NAME = "is_action_pressed"
+has_args = true
+args = [ "run" ]
+not_equals = [ true ]
+NEXT_STATE = "previous"
+
+[node name="Idle" type="Node" parent="Transitions"]
+script = ExtResource( 5 )
+node_key = "body"
+FUNCTION_NAME = "get_velocity_2d"
+equals = [ Vector2( 0, 0 ) ]
+NEXT_STATE = "idle"
+
+[node name="TurnAround" type="Node" parent="Transitions"]
+script = ExtResource( 7 )
+ACTION = "turn_around"
+NEXT_STATE = "fast_turn_around"
+
+[node name="Turn Pressed" type="Node" parent="Transitions"]
+script = ExtResource( 9 )
+action_buffer_key = "buffer"
+action = "turn_around_pressed"
+frames = 30
+
+[node name="Turn Around" type="Node" parent="Transitions/Turn Pressed"]
+script = ExtResource( 10 )
+NEXT_STATE = "fast_turn_around"
+
+[node name="JawAttack" type="Node" parent="Transitions"]
+script = ExtResource( 7 )
+ACTION = "heavy_attack"
+NEXT_STATE = "prepare_jaw_attack"
+
+[node name="HeavyPressed" type="Node" parent="Transitions"]
+script = ExtResource( 9 )
+action_buffer_key = "buffer"
+action = "heavy_attack_pressed"
+frames = 24
+
+[node name="JawAttack" type="Node" parent="Transitions/HeavyPressed"]
+script = ExtResource( 10 )
+NEXT_STATE = "prepare_jaw_attack"
+
+[node name="Swipe" type="Node" parent="Transitions"]
+script = ExtResource( 7 )
+ACTION = "light_attack"
+NEXT_STATE = "swipe"
+
+[node name="Light Pressed" type="Node" parent="Transitions"]
+script = ExtResource( 9 )
+action_buffer_key = "buffer"
+action = "light_attack_pressed"
+frames = 24
+
+[node name="Swipe" type="Node" parent="Transitions/Light Pressed"]
+script = ExtResource( 10 )
+NEXT_STATE = "swipe"
+
+[node name="Howl" type="Node" parent="Transitions"]
+script = ExtResource( 7 )
+ACTION = "special_attack"
+NEXT_STATE = "howl"
+
+[node name="Special Pressed" type="Node" parent="Transitions"]
+script = ExtResource( 9 )
+action_buffer_key = "buffer"
+action = "special_attack_pressed"
+frames = 24
+
+[node name="Howl" type="Node" parent="Transitions/Special Pressed"]
+script = ExtResource( 10 )
+NEXT_STATE = "howl"
+
+[node name="Rush" type="Node" parent="Transitions"]
+script = ExtResource( 7 )
+ACTION = "attack"
+NEXT_STATE = "prepare_rush"

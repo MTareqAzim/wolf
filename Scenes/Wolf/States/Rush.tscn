@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Wolf/States/rush.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=3]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Update/Transitions/equals_transition_state_component.gd" type="Script" id=4]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Exit/call_function_exit_state_component.gd" type="Script" id=5]
+
+[node name="Rush" type="Node"]
+script = ExtResource( 1 )
+state_name = "rush"
+push_down = true
+dependencies = {
+"body": NodePath(""),
+"input": NodePath(""),
+"look": NodePath(""),
+"shape": NodePath("")
+}
+variables = {
+"duration": 1.0,
+"max_distance": 600
+}
+
+[node name="Disable Hitbox" type="Node" parent="."]
+script = ExtResource( 5 )
+node_key = "shape"
+FUNCTION_NAME = "set_deferred"
+args = [ "disabled", true ]
+
+[node name="Rush" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="Rush"]
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Stop" type="Node" parent="Transitions"]
+script = ExtResource( 4 )
+node_key = "body"
+FUNCTION_NAME = "get_velocity_2d"
+equals = [ Vector2( 0, 0 ) ]
+NEXT_STATE = "previous"
+[connection signal="timeout" from="Rush/Timer" to="Rush" method="_on_Timer_timeout"]

@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/Composite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/parallel.png" type="Texture" id=2]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/parallel.gd" type="Script" id=3]
+
+[node name="Parallel" instance=ExtResource( 1 )]
+margin_right = 54.0
+title = "Parallel"
+script = ExtResource( 3 )
+
+[node name="Icon" parent="." index="0"]
+texture = ExtResource( 2 )

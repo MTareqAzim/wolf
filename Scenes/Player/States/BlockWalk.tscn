@@ -1,0 +1,94 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/Entity/State Components/Movement/move_state_component.gd" type="Script" id=2]
+[ext_resource path="res://Utils/Entity/State Components/Look Direction/look_direction_state_component.gd" type="Script" id=3]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Update/Transitions/equals_transition_state_component.gd" type="Script" id=4]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=5]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/released_transition_state_component.gd" type="Script" id=6]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/pressed_transition_state_component.gd" type="Script" id=7]
+[ext_resource path="res://Utils/Entity/State Components/Stamina/fulfills_stamina_cost_state_component.gd" type="Script" id=8]
+[ext_resource path="res://Utils/Entity/State Components/Stamina/replenish_stamina_state_component.gd" type="Script" id=9]
+[ext_resource path="res://Utils/Entity/State Components/Stamina/flash_stamina_bar_state_component.gd" type="Script" id=10]
+
+[node name="BlockWalk" type="Node"]
+script = ExtResource( 1 )
+state_name = "block_walk"
+push_down = true
+overwrite = true
+dependencies = {
+"body": NodePath(""),
+"hud": NodePath(""),
+"input": NodePath(""),
+"look": NodePath(""),
+"stamina": NodePath("")
+}
+variables = {
+"attack_cost": 20.0,
+"max_speed": 100,
+"regen_rate": 5.0,
+"roll_cost": 30.0
+}
+
+[node name="Move" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="Look" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="StaminaRegen" type="Node" parent="."]
+script = ExtResource( 9 )
+
+[node name="AttackCost" type="Node" parent="."]
+script = ExtResource( 10 )
+action = "attack"
+action_cost_key = "attack_cost"
+color = Color( 1, 0, 0, 1 )
+
+[node name="RollCost" type="Node" parent="."]
+script = ExtResource( 10 )
+action = "roll"
+action_cost_key = "roll_cost"
+color = Color( 1, 0, 0, 1 )
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="Idle" type="Node" parent="Transitions"]
+script = ExtResource( 4 )
+node_key = "body"
+FUNCTION_NAME = "get_velocity_2d"
+equals = [ Vector2( 0, 0 ) ]
+NEXT_STATE = "block_idle"
+
+[node name="Block" type="Node" parent="Transitions"]
+script = ExtResource( 6 )
+ACTION = "block"
+NEXT_STATE = "unblock"
+
+[node name="BlockReleased" type="Node" parent="Transitions"]
+script = ExtResource( 4 )
+node_key = "input"
+FUNCTION_NAME = "is_action_pressed"
+has_args = true
+args = [ "block" ]
+equals = [ false ]
+NEXT_STATE = "previous"
+
+[node name="AttackCost" type="Node" parent="Transitions"]
+script = ExtResource( 8 )
+cost_key = "attack_cost"
+
+[node name="Attack" type="Node" parent="Transitions/AttackCost"]
+script = ExtResource( 7 )
+ACTION = "attack"
+NEXT_STATE = "attack"
+
+[node name="RollCost" type="Node" parent="Transitions"]
+script = ExtResource( 8 )
+cost_key = "roll_cost"
+
+[node name="Roll" type="Node" parent="Transitions/RollCost"]
+script = ExtResource( 7 )
+ACTION = "roll"
+NEXT_STATE = "roll"

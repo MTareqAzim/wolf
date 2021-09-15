@@ -1,0 +1,114 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Utils/State Machine/State/component_state.gd" type="Script" id=1]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Enter/call_function_enter_state_component.gd" type="Script" id=2]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/animation_finished_transition_state_component.gd" type="Script" id=3]
+[ext_resource path="res://Utils/Grouping Node/grouping_node.gd" type="Script" id=4]
+[ext_resource path="res://Utils/State Machine/State/State Components/delayed_activation_state_component.gd" type="Script" id=5]
+[ext_resource path="res://Utils/Entity/State Components/Stamina/replenish_stamina_state_component.gd" type="Script" id=6]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/pressed_transition_state_component.gd" type="Script" id=7]
+[ext_resource path="res://Utils/Entity/State Components/Action Buffer/action_buffer_activate_state_component.gd" type="Script" id=8]
+[ext_resource path="res://Utils/State Machine/State/State Components/Transitions/transition_state_component.gd" type="Script" id=9]
+[ext_resource path="res://Utils/State Machine/State/State Components/Node State Components/Enter/call_function_variable_enter_state_component.gd" type="Script" id=10]
+
+[node name="Attack A" type="Node"]
+script = ExtResource( 1 )
+state_name = "attack_a"
+push_down = true
+dependencies = {
+"body": NodePath(""),
+"buffer": NodePath(""),
+"hitbox": NodePath(""),
+"stamina": NodePath("")
+}
+variables = {
+"damage": 14.0,
+"extent": 10,
+"regen_rate": 15.0
+}
+
+[node name="Stop" type="Node" parent="."]
+script = ExtResource( 2 )
+node_key = "body"
+FUNCTION_NAME = "set_target_velocity_2d"
+args = [ Vector2( 0, 0 ) ]
+
+[node name="StaminaRegen" type="Node" parent="."]
+script = ExtResource( 6 )
+
+[node name="Hitbox Extent" type="Node" parent="."]
+script = ExtResource( 10 )
+node_key = "hitbox"
+FUNCTION_NAME = "set_extent"
+variables = [ "extent" ]
+
+[node name="Damage" type="Node" parent="."]
+script = ExtResource( 10 )
+node_key = "hitbox"
+FUNCTION_NAME = "set_damage"
+variables = [ "damage" ]
+
+[node name="Transitions" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="Right Animation End" type="Node" parent="Transitions"]
+script = ExtResource( 3 )
+animation = "right_attack_a"
+NEXT_STATE = "previous"
+
+[node name="Left Animation End" type="Node" parent="Transitions"]
+script = ExtResource( 3 )
+animation = "left_attack_a"
+NEXT_STATE = "previous"
+
+[node name="Delay" type="Node" parent="Transitions"]
+script = ExtResource( 5 )
+delay = 0.8
+_activate = false
+
+[node name="Timer" type="Timer" parent="Transitions/Delay"]
+
+[node name="Delay" type="Node" parent="Transitions/Delay"]
+script = ExtResource( 5 )
+delay = 0.6
+
+[node name="Timer" type="Timer" parent="Transitions/Delay/Delay"]
+
+[node name="Attack B" type="Node" parent="Transitions/Delay/Delay"]
+script = ExtResource( 7 )
+ACTION = "attack"
+NEXT_STATE = "attack_b"
+
+[node name="Attack Pressed" type="Node" parent="Transitions/Delay/Delay"]
+script = ExtResource( 8 )
+action_buffer_key = "buffer"
+action = "attack_pressed"
+frames = 30
+
+[node name="Attack B" type="Node" parent="Transitions/Delay/Delay/Attack Pressed"]
+script = ExtResource( 9 )
+NEXT_STATE = "attack_b"
+
+[node name="RollDelay" type="Node" parent="Transitions"]
+script = ExtResource( 5 )
+delay = 0.6
+
+[node name="Timer" type="Timer" parent="Transitions/RollDelay"]
+
+[node name="Roll" type="Node" parent="Transitions/RollDelay"]
+script = ExtResource( 7 )
+ACTION = "roll"
+NEXT_STATE = "roll"
+
+[node name="Roll Pressed" type="Node" parent="Transitions/RollDelay"]
+script = ExtResource( 8 )
+action_buffer_key = "buffer"
+action = "roll_pressed"
+frames = 18
+
+[node name="Roll" type="Node" parent="Transitions/RollDelay/Roll Pressed"]
+script = ExtResource( 9 )
+NEXT_STATE = "roll"
+[connection signal="timeout" from="Transitions/Delay/Timer" to="Transitions/Delay" method="_on_Timer_timeout"]
+[connection signal="timeout" from="Transitions/Delay/Delay/Timer" to="Transitions/Delay/Delay" method="_on_Timer_timeout"]
+[connection signal="timeout" from="Transitions/RollDelay/Timer" to="Transitions/RollDelay" method="_on_Timer_timeout"]

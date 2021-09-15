@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scenes/UI/Health Bar/health_bar.gd" type="Script" id=1]
+[ext_resource path="res://Sprites/UI/health_bar_frame.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/UI/health_bar.png" type="Texture" id=3]
+
+[sub_resource type="Animation" id=1]
+resource_name = "flash"
+length = 0.6
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Overlay:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.494118 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.494118 ), Color( 1, 1, 1, 0 ) ]
+}
+
+[node name="HealthBar" type="TextureRect"]
+anchor_top = 0.017
+anchor_bottom = 0.017
+margin_top = -6.12
+margin_right = 228.0
+margin_bottom = 5.88
+rect_min_size = Vector2( 228, 12 )
+texture = ExtResource( 2 )
+stretch_mode = 5
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Bar" type="NinePatchRect" parent="."]
+anchor_top = 0.417
+anchor_bottom = 0.417
+margin_left = 13.0
+margin_top = -3.004
+margin_right = 225.0
+margin_bottom = 2.996
+rect_min_size = Vector2( 3, 6 )
+texture = ExtResource( 3 )
+patch_margin_left = 1
+patch_margin_right = 1
+patch_margin_bottom = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Overlay" type="ColorRect" parent="."]
+modulate = Color( 1, 1, 1, 0 )
+margin_left = 13.0
+margin_top = 2.0
+margin_right = 225.0
+margin_bottom = 8.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/flash = SubResource( 1 )

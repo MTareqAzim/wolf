@@ -1,0 +1,323 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://addons/behavior_tree/Themes/Containers/Tab.tres" type="Theme" id=1]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Root/root.svg" type="Texture" id=2]
+[ext_resource path="res://addons/behavior_tree/Scenes/graph.gd" type="Script" id=3]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/parallel.png" type="Texture" id=4]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/sequence.png" type="Texture" id=5]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/monitor.png" type="Texture" id=6]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Composite/selector.png" type="Texture" id=7]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Decorators/inverter.png" type="Texture" id=8]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Decorators/failer.png" type="Texture" id=9]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Decorators/repeater.png" type="Texture" id=10]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Decorators/succeeder.png" type="Texture" id=11]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Leaves/condition.png" type="Texture" id=12]
+[ext_resource path="res://addons/behavior_tree/Scenes/Behaviors/Leaves/action.png" type="Texture" id=13]
+[ext_resource path="res://addons/behavior_tree/Scenes/editor.gd" type="Script" id=14]
+[ext_resource path="res://addons/behavior_tree/Scenes/info.gd" type="Script" id=15]
+
+[sub_resource type="Theme" id=1]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.121569, 0.145098, 0.192157, 1 )
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color( 0.121569, 0.145098, 0.192157, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.145098, 0.172549, 0.231373, 1 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 2
+border_color = Color( 0.145098, 0.172549, 0.231373, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.145098, 0.172549, 0.231373, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.121569, 0.145098, 0.192157, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.145098, 0.172549, 0.231373, 1 )
+
+[node name="Editor" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 1024, 600 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource( 1 )
+script = ExtResource( 14 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Mount" type="PanelContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Editor" type="HSplitContainer" parent="Mount"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1014.0
+margin_bottom = 590.0
+
+[node name="Info" type="TabContainer" parent="Mount/Editor"]
+margin_right = 272.0
+margin_bottom = 580.0
+rect_min_size = Vector2( 182, 0 )
+theme = ExtResource( 1 )
+tab_align = 0
+drag_to_rearrange_enabled = true
+
+[node name="Nodes" type="ScrollContainer" parent="Mount/Editor/Info"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 31.0
+margin_right = -5.0
+margin_bottom = -5.0
+rect_min_size = Vector2( 0, 300 )
+scroll_horizontal_enabled = false
+
+[node name="Nodes" type="VBoxContainer" parent="Mount/Editor/Info/Nodes"]
+margin_right = 250.0
+margin_bottom = 558.0
+rect_min_size = Vector2( 250, 0 )
+
+[node name="Root" type="VSplitContainer" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_right = 250.0
+margin_bottom = 57.0
+rect_min_size = Vector2( 0, 57 )
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="Mount/Editor/Info/Nodes/Nodes/Root"]
+margin_right = 250.0
+margin_bottom = 14.0
+text = "Root Node"
+
+[node name="Root Node" type="ItemList" parent="Mount/Editor/Info/Nodes/Nodes/Root"]
+margin_top = 14.0
+margin_right = 250.0
+margin_bottom = 57.0
+rect_min_size = Vector2( 0, 43 )
+custom_styles/bg = SubResource( 3 )
+custom_constants/icon_margin = 10
+items = [ "Root Node", ExtResource( 2 ), false ]
+fixed_icon_size = Vector2( 30, 30 )
+
+[node name="HSeparator" type="HSeparator" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 61.0
+margin_right = 250.0
+margin_bottom = 65.0
+custom_styles/separator = SubResource( 4 )
+
+[node name="Composite" type="VSplitContainer" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 69.0
+margin_right = 250.0
+margin_bottom = 233.0
+rect_min_size = Vector2( 0, 160 )
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="Mount/Editor/Info/Nodes/Nodes/Composite"]
+margin_right = 250.0
+margin_bottom = 14.0
+text = "Composite Nodes"
+
+[node name="Composite Nodes" type="ItemList" parent="Mount/Editor/Info/Nodes/Nodes/Composite"]
+margin_top = 14.0
+margin_right = 250.0
+margin_bottom = 164.0
+rect_min_size = Vector2( 0, 150 )
+custom_styles/bg = SubResource( 3 )
+custom_constants/icon_margin = 10
+items = [ "Selector", ExtResource( 7 ), false, "Sequence", ExtResource( 5 ), false, "Parallel", ExtResource( 4 ), false, "Monitor", ExtResource( 6 ), false ]
+fixed_icon_size = Vector2( 30, 30 )
+
+[node name="HSeparator2" type="HSeparator" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 237.0
+margin_right = 250.0
+margin_bottom = 241.0
+custom_styles/separator = SubResource( 4 )
+
+[node name="Decorator" type="VSplitContainer" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 245.0
+margin_right = 250.0
+margin_bottom = 409.0
+rect_min_size = Vector2( 0, 160 )
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="Mount/Editor/Info/Nodes/Nodes/Decorator"]
+margin_right = 250.0
+margin_bottom = 14.0
+text = "Decorator Nodes"
+
+[node name="Decorator Nodes" type="ItemList" parent="Mount/Editor/Info/Nodes/Nodes/Decorator"]
+margin_top = 14.0
+margin_right = 250.0
+margin_bottom = 164.0
+rect_min_size = Vector2( 0, 150 )
+custom_styles/bg = SubResource( 3 )
+custom_constants/icon_margin = 10
+items = [ "Inverter", ExtResource( 8 ), false, "Failer", ExtResource( 9 ), false, "Succeeder", ExtResource( 11 ), false, "Repeater", ExtResource( 10 ), false ]
+fixed_icon_size = Vector2( 30, 30 )
+
+[node name="HSeparator3" type="HSeparator" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 413.0
+margin_right = 250.0
+margin_bottom = 417.0
+custom_styles/separator = SubResource( 4 )
+
+[node name="Leaf" type="VSplitContainer" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 421.0
+margin_right = 250.0
+margin_bottom = 516.0
+rect_min_size = Vector2( 0, 95 )
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="Mount/Editor/Info/Nodes/Nodes/Leaf"]
+margin_right = 250.0
+margin_bottom = 14.0
+text = "Leaf Nodes"
+
+[node name="Leaf Nodes" type="ItemList" parent="Mount/Editor/Info/Nodes/Nodes/Leaf"]
+margin_top = 14.0
+margin_right = 250.0
+margin_bottom = 95.0
+rect_min_size = Vector2( 0, 81 )
+custom_styles/bg = SubResource( 3 )
+custom_constants/icon_margin = 10
+items = [ "Action", ExtResource( 13 ), false, "Condition", ExtResource( 12 ), false ]
+fixed_icon_size = Vector2( 30, 30 )
+
+[node name="HSeparator4" type="HSeparator" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 520.0
+margin_right = 250.0
+margin_bottom = 524.0
+custom_styles/separator = SubResource( 4 )
+
+[node name="Save Tree" type="Button" parent="Mount/Editor/Info/Nodes/Nodes"]
+margin_top = 528.0
+margin_right = 250.0
+margin_bottom = 558.0
+rect_min_size = Vector2( 0, 30 )
+custom_styles/normal = SubResource( 5 )
+text = "Save Tree"
+
+[node name="Info" type="ScrollContainer" parent="Mount/Editor/Info"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 31.0
+margin_right = -5.0
+margin_bottom = -5.0
+rect_min_size = Vector2( 0, 300 )
+scroll_horizontal_enabled = false
+
+[node name="Info" type="VBoxContainer" parent="Mount/Editor/Info/Info"]
+margin_right = 250.0
+margin_bottom = 34.0
+rect_min_size = Vector2( 250, 0 )
+script = ExtResource( 15 )
+
+[node name="Type" type="VSplitContainer" parent="Mount/Editor/Info/Info/Info"]
+margin_right = 250.0
+margin_bottom = 38.0
+dragger_visibility = 2
+
+[node name="Label" type="Label" parent="Mount/Editor/Info/Info/Info/Type"]
+margin_right = 250.0
+margin_bottom = 14.0
+text = "Node Type"
+
+[node name="LineEdit" type="LineEdit" parent="Mount/Editor/Info/Info/Info/Type"]
+margin_top = 14.0
+margin_right = 250.0
+margin_bottom = 38.0
+custom_colors/font_color_uneditable = Color( 1, 1, 1, 1 )
+text = "Node Type"
+editable = false
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="HSeparator" type="HSeparator" parent="Mount/Editor/Info/Info/Info"]
+margin_top = 42.0
+margin_right = 250.0
+margin_bottom = 46.0
+custom_styles/separator = SubResource( 4 )
+
+[node name="Properties" type="VBoxContainer" parent="Mount/Editor/Info/Info/Info"]
+margin_top = 50.0
+margin_right = 250.0
+margin_bottom = 64.0
+
+[node name="Label" type="Label" parent="Mount/Editor/Info/Info/Info/Properties"]
+margin_right = 250.0
+margin_bottom = 14.0
+text = "Properties"
+
+[node name="HSeparator2" type="HSeparator" parent="Mount/Editor/Info/Info/Info"]
+margin_top = 68.0
+margin_right = 250.0
+margin_bottom = 72.0
+custom_styles/separator = SubResource( 4 )
+
+[node name="Save Tree" type="Button" parent="Mount/Editor/Info/Info/Info"]
+margin_top = 562.0
+margin_right = 250.0
+margin_bottom = 592.0
+rect_min_size = Vector2( 0, 30 )
+custom_styles/normal = SubResource( 5 )
+text = "Save Tree"
+
+[node name="Graph" type="TabContainer" parent="Mount/Editor"]
+margin_left = 284.0
+margin_right = 1004.0
+margin_bottom = 580.0
+rect_min_size = Vector2( 428, 0 )
+theme = ExtResource( 1 )
+tab_align = 0
+drag_to_rearrange_enabled = true
+
+[node name="Behavior Tree" type="GraphEdit" parent="Mount/Editor/Graph"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 31.0
+margin_right = -5.0
+margin_bottom = -5.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/bg = SubResource( 6 )
+right_disconnects = true
+scroll_offset = Vector2( -12, -26 )
+script = ExtResource( 3 )
+
+[node name="Halt" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 0
+text = "Please select a Behavior Tree node."
+align = 1
+valign = 1
+[connection signal="item_activated" from="Mount/Editor/Info/Nodes/Nodes/Root/Root Node" to="Mount/Editor/Graph/Behavior Tree" method="_on_Root_Node_item_activated"]
+[connection signal="item_activated" from="Mount/Editor/Info/Nodes/Nodes/Composite/Composite Nodes" to="Mount/Editor/Graph/Behavior Tree" method="_on_Composite_Nodes_item_activated"]
+[connection signal="item_activated" from="Mount/Editor/Info/Nodes/Nodes/Decorator/Decorator Nodes" to="Mount/Editor/Graph/Behavior Tree" method="_on_Decorator_Nodes_item_activated"]
+[connection signal="item_activated" from="Mount/Editor/Info/Nodes/Nodes/Leaf/Leaf Nodes" to="Mount/Editor/Graph/Behavior Tree" method="_on_Leaf_Nodes_item_activated"]
+[connection signal="pressed" from="Mount/Editor/Info/Nodes/Nodes/Save Tree" to="Mount/Editor/Graph/Behavior Tree" method="_on_Save_Tree_pressed"]
+[connection signal="pressed" from="Mount/Editor/Info/Info/Info/Save Tree" to="Mount/Editor/Graph/Behavior Tree" method="_on_Save_Tree_pressed"]
+[connection signal="connection_request" from="Mount/Editor/Graph/Behavior Tree" to="Mount/Editor/Graph/Behavior Tree" method="_on_connection_request"]
+[connection signal="disconnection_request" from="Mount/Editor/Graph/Behavior Tree" to="Mount/Editor/Graph/Behavior Tree" method="_on_disconnection_request"]
+[connection signal="node_selected" from="Mount/Editor/Graph/Behavior Tree" to="." method="_on_Behavior_Tree_node_selected"]
+[connection signal="node_unselected" from="Mount/Editor/Graph/Behavior Tree" to="." method="_on_Behavior_Tree_node_unselected"]
+[connection signal="scroll_offset_changed" from="Mount/Editor/Graph/Behavior Tree" to="Mount/Editor/Graph/Behavior Tree" method="_on_scroll_offset_changed"]

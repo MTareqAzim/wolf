@@ -1,0 +1,84 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Scenes/Player/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Wolf/Wolf.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Sprites/Background/clouds_far.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/Background/hills.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/Background/sky.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/Background/clouds_close.png" type="Texture" id=8]
+[ext_resource path="res://Sprites/Background/grass.png" type="Texture" id=9]
+
+[node name="World" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="Sky" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.1, 1 )
+motion_mirroring = Vector2( 640, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Sky"]
+texture = ExtResource( 7 )
+centered = false
+
+[node name="Clouds Far" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.25, 1 )
+motion_mirroring = Vector2( 640, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Clouds Far"]
+texture = ExtResource( 5 )
+centered = false
+
+[node name="Clouds Close" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.5, 1 )
+motion_mirroring = Vector2( 640, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Clouds Close"]
+texture = ExtResource( 8 )
+centered = false
+
+[node name="Hills" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.75, 1 )
+motion_mirroring = Vector2( 640, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Hills"]
+texture = ExtResource( 6 )
+centered = false
+
+[node name="grass" type="Sprite" parent="."]
+position = Vector2( 320, 180 )
+texture = ExtResource( 9 )
+
+[node name="grass2" type="Sprite" parent="."]
+position = Vector2( 960, 180 )
+scale = Vector2( -1, 1 )
+texture = ExtResource( 9 )
+
+[node name="grass3" type="Sprite" parent="."]
+position = Vector2( -320, 180 )
+scale = Vector2( -1, 1 )
+texture = ExtResource( 9 )
+
+[node name="YSort" type="YSort" parent="."]
+
+[node name="Player" parent="YSort" instance=ExtResource( 1 )]
+position = Vector2( 466, 279 )
+collision_mask = 3
+
+[node name="Wolf" parent="YSort" instance=ExtResource( 2 )]
+position = Vector2( 249, 293 )
+collision_mask = 2
+
+[node name="Bounds" type="StaticBody2D" parent="."]
+collision_layer = 2
+
+[node name="Top" type="CollisionPolygon2D" parent="Bounds"]
+polygon = PoolVector2Array( -640, 231, -512, 233, -358, 225, -157, 231, 1, 234, 172, 230, 332, 225, 399, 227, 479, 229, 615, 233, 1279, 233, 1303, 207, -683, 189 )
+
+[node name="Right" type="CollisionPolygon2D" parent="Bounds"]
+polygon = PoolVector2Array( 1279, 232, 1280, 362, 1311, 385, 1309, 194 )
+
+[node name="Left" type="CollisionPolygon2D" parent="Bounds"]
+polygon = PoolVector2Array( -681, 191, -639, 232, -640, 361, -680, 386 )
+
+[node name="Bottom" type="CollisionPolygon2D" parent="Bounds"]
+polygon = PoolVector2Array( -642, 344, -420, 354, -187, 345, -100, 352, 76, 350, 111, 354, 170, 344, 299, 346, 403, 352, 442, 353, 550, 347, 691, 346, 822, 350, 863, 356, 975, 346, 1130, 347, 1168, 352, 1280, 349, 1292, 396, -662, 386 )

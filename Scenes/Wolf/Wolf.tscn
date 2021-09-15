@@ -1,0 +1,2483 @@
+[gd_scene load_steps=59 format=2]
+
+[ext_resource path="res://Utils/Entity/Entity.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Sprites/Wolf/Wolf.png" type="Texture" id=2]
+[ext_resource path="res://addons/behavior_tree/Classes/behavior_tree.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Wolf/state_machine.gd" type="Script" id=4]
+[ext_resource path="res://Utils/Action Buffer/action_buffer.gd" type="Script" id=5]
+[ext_resource path="res://Scenes/Wolf/States/Idle.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Utils/Entity/Look Direction/look_direction.gd" type="Script" id=7]
+[ext_resource path="res://Scenes/Wolf/feet.gd" type="Script" id=8]
+[ext_resource path="res://Scenes/Wolf/sprite.gd" type="Script" id=9]
+[ext_resource path="res://Scenes/Wolf/animation_player.gd" type="Script" id=10]
+[ext_resource path="res://Scenes/Wolf/States/Walk.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Scenes/Wolf/States/Run.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Scenes/Wolf/wolf_ai.gd" type="Script" id=13]
+[ext_resource path="res://Scenes/Wolf/States/TurnAround.tscn" type="PackedScene" id=14]
+[ext_resource path="res://Scenes/Wolf/States/FastTurnAround.tscn" type="PackedScene" id=15]
+[ext_resource path="res://Scenes/Wolf/States/PrepareJawAttack.tscn" type="PackedScene" id=16]
+[ext_resource path="res://Scenes/Wolf/States/JawAttack.tscn" type="PackedScene" id=17]
+[ext_resource path="res://Scenes/Wolf/States/Howl.tscn" type="PackedScene" id=18]
+[ext_resource path="res://Scenes/Wolf/States/PrepareRush.tscn" type="PackedScene" id=19]
+[ext_resource path="res://Scenes/Wolf/States/Rush.tscn" type="PackedScene" id=20]
+[ext_resource path="res://Scenes/Wolf/States/Swipe.tscn" type="PackedScene" id=21]
+[ext_resource path="res://Scenes/Wolf/States/Whirlwind.tscn" type="PackedScene" id=22]
+[ext_resource path="res://Utils/Entity/Hitbox/Hitbox.tscn" type="PackedScene" id=23]
+[ext_resource path="res://Scenes/Wolf/Hitbox/swipe.gd" type="Script" id=24]
+[ext_resource path="res://Scenes/Wolf/Hitbox/jaw_attack.gd" type="Script" id=25]
+[ext_resource path="res://Scenes/Wolf/Hitbox/whirlwind.gd" type="Script" id=26]
+[ext_resource path="res://Scenes/Wolf/Hitbox/rush.gd" type="Script" id=27]
+[ext_resource path="res://Scenes/Wolf/Hitbox/howl.gd" type="Script" id=28]
+[ext_resource path="res://Scenes/Wolf/shockwave.gd" type="Script" id=29]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 125.0
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 400.0
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 700.0
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 23, 53 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 22, 52 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 28, 48 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 142, 71 )
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 128, 76 )
+
+[sub_resource type="CircleShape2D" id=9]
+
+[sub_resource type="CapsuleShape2D" id=10]
+radius = 7.9997
+height = 166.0
+
+[sub_resource type="Animation" id=11]
+length = 0.4
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 26, 27, 28, 29, 30, 31, 32, 33 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Back Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 34, -6 ), Vector2( 34, -6 ), Vector2( 34, -6 ), Vector2( 34, -6 ), Vector2( 20, -6 ), Vector2( 9, -6 ), Vector2( 9, -6 ), Vector2( 23, -6 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Back Front Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -68, -6 ), Vector2( -66, -6 ), Vector2( -18, -6 ), Vector2( -37, 2 ), Vector2( -4, 9 ), Vector2( 72, 2 ), Vector2( 72, -2 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Front Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -76, 2 ), Vector2( -36, 2 ), Vector2( -36, 2 ), Vector2( 1, 9 ), Vector2( 5, 9 ), Vector2( 0, 8 ), Vector2( 35, 9 ), Vector2( 60, 9 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Front Back Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 81, 2 ), Vector2( 81, 2 ), Vector2( 81, 2 ), Vector2( 81, 2 ), Vector2( 49, -6 ), Vector2( 49, -6 ), Vector2( 35, -6 ), Vector2( -15, -6 ) ]
+}
+
+[sub_resource type="Animation" id=12]
+length = 2.8
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.9, 1, 1.1, 1.2, 1.3, 1.5, 2.5, 2.6, 2.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 50, 51, 52, 53, 54, 55, 56, 57, 53, 54, 55, 56, 57, 58, 59, 60, 61 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Front Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 2.5, 2.6, 2.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -81, 2 ), Vector2( -81, 2 ), Vector2( -28, 2 ), Vector2( -14, 2 ), Vector2( -14, 2 ), Vector2( -81, 2 ), Vector2( -81, 2 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Back Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3, 2.5, 2.6, 2.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -20, -6 ), Vector2( -7, -6 ), Vector2( -7, -6 ), Vector2( -7, -6 ), Vector2( -7, -6 ), Vector2( -17, -6 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Front Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 2.5, 2.6, 2.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Back Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 2.5, 2.6, 2.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 68, -6 ), Vector2( 68, -6 ), Vector2( 68, -6 ), Vector2( 68, -6 ), Vector2( 68, -6 ), Vector2( 68, -6 ), Vector2( 68, -6 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Z Pos/Howl/CollisionShape2D:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 1.5, 2.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Z Pos/Howl/CollisionShape2D:shape:radius")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 1.5, 2.4, 2.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 10.0, 10.0, 360.0, 10.0 ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("Z Pos/Howl:extent")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 1.5, 2.4, 2.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 8, 8, 200, 8 ]
+}
+tracks/8/type = "method"
+tracks/8/path = NodePath("CanvasLayer/Shockwave")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 1.5 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "play_shockwave"
+} ]
+}
+
+[sub_resource type="Animation" id=13]
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Back Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -33, -5 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Front Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -81, 3 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Back Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 68, -5 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Front Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 56, 3 ) ]
+}
+
+[sub_resource type="Animation" id=14]
+length = 0.7
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 40, 41, 42, 43, 44, 45, 46, 47, 48 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Front Front Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 117, 2 ), Vector2( 76, 2 ), Vector2( 30, 2 ), Vector2( 18, 2 ), Vector2( 66, 2 ), Vector2( 66, 2 ), Vector2( 66, 2 ), Vector2( 72, 2 ), Vector2( 64, 2 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Front Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -42, 2 ), Vector2( -79, 2 ), Vector2( -106, 2 ), Vector2( -85, 2 ), Vector2( -25, 2 ), Vector2( -25, 2 ), Vector2( -25, 2 ), Vector2( -21, 2 ), Vector2( -81, 2 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Back Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 99, -6 ), Vector2( 116, -6 ), Vector2( 74, -6 ), Vector2( 61, -6 ), Vector2( 75, -6 ), Vector2( 75, -6 ), Vector2( 75, -6 ), Vector2( 77, -6 ), Vector2( 72, -6 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Back Back Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.5, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -105, -6 ), Vector2( -111, -6 ), Vector2( -111, -6 ), Vector2( -52, -6 ), Vector2( -60, -6 ), Vector2( -60, -6 ), Vector2( -60, -6 ), Vector2( -54, -6 ), Vector2( -33, -6 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Z Pos/Jaw Attack/CollisionShape2D:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true ]
+}
+
+[sub_resource type="Animation" id=15]
+length = 0.8
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 37, 38, 39 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Front Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -82, 2 ), Vector2( -82, 2 ), Vector2( -19, 2 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Back Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -32, -6 ), Vector2( -32, -6 ), Vector2( -53, -5 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Front Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 57, 2 ), Vector2( 65, 2 ), Vector2( 73, 2 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Back Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 67, -6 ), Vector2( 73, -6 ), Vector2( 79, -6 ) ]
+}
+
+[sub_resource type="Animation" id=16]
+length = 0.8
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 37, 38, 39 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Front Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -82, 2 ), Vector2( -82, 2 ), Vector2( -19, 2 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Back Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -32, -6 ), Vector2( -32, -6 ), Vector2( -53, -5 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Front Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 57, 2 ), Vector2( 65, 2 ), Vector2( 73, 2 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Back Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 67, -6 ), Vector2( 73, -6 ), Vector2( 79, -6 ) ]
+}
+
+[sub_resource type="Animation" id=17]
+length = 0.75
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Back Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -101, -6 ), Vector2( -109, -6 ), Vector2( -105, -6 ), Vector2( -118, -6 ), Vector2( -112, -6 ), Vector2( -101, -6 ), Vector2( -92, -6 ), Vector2( -89, -6 ), Vector2( -41, -6 ), Vector2( -36, -6 ), Vector2( -12, -6 ), Vector2( 11, -6 ), Vector2( 11, -6 ), Vector2( -40, -6 ), Vector2( -63, -6 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Front Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -37, 2 ), Vector2( -59, 2 ), Vector2( -74, 2 ), Vector2( -103, 2 ), Vector2( -108, 2 ), Vector2( -100, 2 ), Vector2( -92, 2 ), Vector2( -95, 2 ), Vector2( -79, 2 ), Vector2( -50, 2 ), Vector2( -26, 2 ), Vector2( -15, 2 ), Vector2( -15, 2 ), Vector2( 7, 2 ), Vector2( -30, 2 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Back Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 95, -6 ), Vector2( 110, -6 ), Vector2( 122, -6 ), Vector2( 125, -6 ), Vector2( 125, -6 ), Vector2( 107, -6 ), Vector2( 79, -6 ), Vector2( 53, -6 ), Vector2( 20, -6 ), Vector2( -12, -6 ), Vector2( -18, -6 ), Vector2( -3, -6 ), Vector2( 38, -6 ), Vector2( 63, -6 ), Vector2( 81, -6 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Front Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 122, 2 ), Vector2( 110, 2 ), Vector2( 83, 2 ), Vector2( 57, 2 ), Vector2( 30, 2 ), Vector2( -8, 2 ), Vector2( -18, 2 ), Vector2( -18, 2 ), Vector2( -11, 2 ), Vector2( 8, 2 ), Vector2( 32, 2 ), Vector2( 57, 2 ), Vector2( 81, 2 ), Vector2( 91, 2 ), Vector2( 104, 2 ) ]
+}
+
+[sub_resource type="Animation" id=18]
+length = 0.75
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Back Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -101, -6 ), Vector2( -109, -6 ), Vector2( -105, -6 ), Vector2( -118, -6 ), Vector2( -112, -6 ), Vector2( -101, -6 ), Vector2( -92, -6 ), Vector2( -89, -6 ), Vector2( -41, -6 ), Vector2( -36, -6 ), Vector2( -12, -6 ), Vector2( 11, -6 ), Vector2( 11, -6 ), Vector2( -40, -6 ), Vector2( -63, -6 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Front Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -37, 2 ), Vector2( -59, 2 ), Vector2( -74, 2 ), Vector2( -103, 2 ), Vector2( -108, 2 ), Vector2( -100, 2 ), Vector2( -92, 2 ), Vector2( -95, 2 ), Vector2( -79, 2 ), Vector2( -50, 2 ), Vector2( -26, 2 ), Vector2( -15, 2 ), Vector2( -15, 2 ), Vector2( 7, 2 ), Vector2( -30, 2 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Back Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 95, -6 ), Vector2( 110, -6 ), Vector2( 122, -6 ), Vector2( 125, -6 ), Vector2( 125, -6 ), Vector2( 107, -6 ), Vector2( 79, -6 ), Vector2( 53, -6 ), Vector2( 20, -6 ), Vector2( -12, -6 ), Vector2( -18, -6 ), Vector2( -3, -6 ), Vector2( 38, -6 ), Vector2( 63, -6 ), Vector2( 81, -6 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Front Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 122, 2 ), Vector2( 110, 2 ), Vector2( 83, 2 ), Vector2( 57, 2 ), Vector2( 30, 2 ), Vector2( -8, 2 ), Vector2( -18, 2 ), Vector2( -18, 2 ), Vector2( -11, 2 ), Vector2( 8, 2 ), Vector2( 32, 2 ), Vector2( 57, 2 ), Vector2( 81, 2 ), Vector2( 91, 2 ), Vector2( 104, 2 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Z Pos/Rush/CollisionShape2D:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=19]
+length = 1.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 0.8, 0.9, 0.95, 1, 1.05, 1.1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Front Front Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.55, 0.6, 1.05, 1.1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 56, 2 ), Vector2( 70, 2 ), Vector2( 54, 2 ), Vector2( 54, 2 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Back Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -11, -6 ), Vector2( -11, -6 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Front Back Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -81, 2 ), Vector2( -81, 2 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Back Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.1, 0.55, 1.1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 53, -6 ), Vector2( 98, -6 ), Vector2( 81, -6 ), Vector2( 81, -6 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Feet/Back Front Foot:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.55 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Feet/Front Front Foot:disabled")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0.6, 1.05 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("Z Pos/Swipe/Back:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.45, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("Z Pos/Swipe/Front:disabled")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 0.95, 1.1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("Z Pos/Swipe:offset")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0, 0.4, 0.9, 1.15 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, -6, 6, 0 ]
+}
+
+[sub_resource type="Animation" id=20]
+length = 0.55
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Back Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 34, -6 ), Vector2( 34, -6 ), Vector2( 34, -6 ), Vector2( 34, -6 ), Vector2( 20, -6 ), Vector2( 9, -6 ), Vector2( 9, -6 ), Vector2( 23, -6 ), Vector2( 20, -7 ), Vector2( 0, -6 ), Vector2( -31, -6 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Back Front Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.35, 0.4, 0.45, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -68, -6 ), Vector2( -66, -6 ), Vector2( -18, -6 ), Vector2( -37, 2 ), Vector2( -4, 9 ), Vector2( 72, 2 ), Vector2( 72, -2 ), Vector2( 72, -6 ), Vector2( 72, -6 ), Vector2( 72, -6 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Front Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -76, 2 ), Vector2( -36, 2 ), Vector2( -36, 2 ), Vector2( 1, 9 ), Vector2( 5, 9 ), Vector2( 0, 8 ), Vector2( 35, 9 ), Vector2( 60, 9 ), Vector2( 60, 5 ), Vector2( 60, 2 ), Vector2( 60, 2 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Front Back Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 81, 2 ), Vector2( 81, 2 ), Vector2( 81, 2 ), Vector2( 81, 2 ), Vector2( 49, -6 ), Vector2( 49, -6 ), Vector2( 35, -6 ), Vector2( -15, -6 ), Vector2( -19, -6 ), Vector2( -78, 2 ), Vector2( -78, 2 ) ]
+}
+
+[sub_resource type="Animation" id=21]
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Back Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -11, -6 ), Vector2( -25, -6 ), Vector2( -40, -6 ), Vector2( -59, -6 ), Vector2( -75, -6 ), Vector2( -76, -6 ), Vector2( -76, -6 ), Vector2( -43, -6 ), Vector2( -12, -6 ), Vector2( 6, -6 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Front Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -81, 2 ), Vector2( -73, 2 ), Vector2( -38, 2 ), Vector2( -14, 2 ), Vector2( 23, 2 ), Vector2( 8, 2 ), Vector2( -29, 2 ), Vector2( -42, 2 ), Vector2( -62, 2 ), Vector2( -74, 2 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Back Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 53, -6 ), Vector2( 98, -6 ), Vector2( 109, -6 ), Vector2( 88, -6 ), Vector2( 77, -6 ), Vector2( 58, -6 ), Vector2( 36, -6 ), Vector2( 24, -6 ), Vector2( 16, -6 ), Vector2( 26, -6 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Front Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 56, 2 ), Vector2( 45, 2 ), Vector2( 28, 2 ), Vector2( 15, 2 ), Vector2( 6, 2 ), Vector2( 73, 2 ), Vector2( 96, 2 ), Vector2( 107, 2 ), Vector2( 93, 2 ), Vector2( 80, 2 ) ]
+}
+
+[sub_resource type="Animation" id=22]
+length = 1.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Z Pos/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Feet/Back Back Foot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -33, -6 ), Vector2( -54, -6 ), Vector2( -34, -6 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Feet/Front Back Foot:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -81, 2 ), Vector2( -22, 2 ), Vector2( -81, 2 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Feet/Front Front Foot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.3, 0.4, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 56, 2 ), Vector2( 65, 2 ), Vector2( 73, 2 ), Vector2( 63, 2 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Feet/Back Front Foot:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.3, 0.4, 1.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 68, -6 ), Vector2( 72, -6 ), Vector2( 78, -6 ), Vector2( 75, -6 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Z Pos/Whirlwind/CollisionShape2D:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.7, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true ]
+}
+
+[sub_resource type="CapsuleShape2D" id=23]
+radius = 2.99999
+height = 10.0
+
+[sub_resource type="CapsuleShape2D" id=24]
+radius = 3.0
+height = 10.0
+
+[sub_resource type="CapsuleShape2D" id=25]
+radius = 3.0
+height = 8.0
+
+[sub_resource type="CapsuleShape2D" id=26]
+radius = 3.0
+height = 8.0
+
+[sub_resource type="Shader" id=27]
+code = "shader_type canvas_item;
+
+uniform vec2 center;
+uniform float force;
+uniform float size;
+uniform float thickness;
+
+void fragment() {
+	float ratio = SCREEN_PIXEL_SIZE.x / SCREEN_PIXEL_SIZE.y;
+	vec2 scaledUV = (SCREEN_UV - vec2(0.5, 0.0)) / vec2(ratio, 1.0) + vec2(0.5, 0.0);
+	float mask = (1.0 - smoothstep(size - 0.025, size, length(SCREEN_UV - center))) *
+			smoothstep(size - thickness - 0.025, size - thickness, length(SCREEN_UV - center));
+	vec2 disp = normalize(SCREEN_UV - center) * force * mask;
+	
+	COLOR = texture(SCREEN_TEXTURE, SCREEN_UV - disp);
+}"
+
+[sub_resource type="ShaderMaterial" id=28]
+shader = SubResource( 27 )
+shader_param/center = Vector2( 0.64375, 0.375 )
+shader_param/force = 0.1
+shader_param/size = 0.5
+shader_param/thickness = 0.025
+
+[sub_resource type="Animation" id=29]
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/size")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.9 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 0.6 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.9 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[node name="Wolf" instance=ExtResource( 1 )]
+collision_layer = 0
+MAX_SPEED = 3000
+FRICTION = 1500
+ACCELERATION = 800
+_height = 130
+
+[node name="Distance" type="Area2D" parent="." index="0"]
+visible = false
+show_behind_parent = true
+monitoring = false
+monitorable = false
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Distance" index="0"]
+scale = Vector2( 1, 0.5 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Distance" index="1"]
+scale = Vector2( 1, 0.5 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Distance" index="2"]
+scale = Vector2( 1, 0.5 )
+shape = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Z Pos" index="0"]
+position = Vector2( 0, -68 )
+texture = ExtResource( 2 )
+vframes = 14
+hframes = 8
+script = ExtResource( 9 )
+
+[node name="Swipe" parent="Z Pos" index="1" instance=ExtResource( 23 )]
+visible = false
+script = ExtResource( 24 )
+body_node = NodePath("../..")
+extent = 15
+damage = 10.0
+
+[node name="Back" type="CollisionShape2D" parent="Z Pos/Swipe" index="0"]
+position = Vector2( 99, -44 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="Front" type="CollisionShape2D" parent="Z Pos/Swipe" index="1"]
+position = Vector2( 76, -32 )
+shape = SubResource( 5 )
+disabled = true
+
+[node name="Jaw Attack" parent="Z Pos" index="2" instance=ExtResource( 23 )]
+visible = false
+script = ExtResource( 25 )
+body_node = NodePath("../..")
+extent = 20
+damage = 20.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Z Pos/Jaw Attack" index="0"]
+position = Vector2( 129, -46 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="Whirlwind" parent="Z Pos" index="3" instance=ExtResource( 23 )]
+visible = false
+script = ExtResource( 26 )
+body_node = NodePath("../..")
+extent = 20
+damage = 10.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Z Pos/Whirlwind" index="0"]
+position = Vector2( 0, -51 )
+shape = SubResource( 7 )
+disabled = true
+
+[node name="Rush" parent="Z Pos" index="4" instance=ExtResource( 23 )]
+visible = false
+script = ExtResource( 27 )
+body_node = NodePath("../..")
+extent = 20
+damage = 15.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Z Pos/Rush" index="0"]
+position = Vector2( 31, -62 )
+shape = SubResource( 8 )
+disabled = true
+
+[node name="Howl" parent="Z Pos" index="5" instance=ExtResource( 23 )]
+visible = false
+collision_layer = 16
+collision_mask = 2147483656
+script = ExtResource( 28 )
+body_node = NodePath("../..")
+extent = 8
+damage = 5.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Z Pos/Howl" index="0"]
+position = Vector2( 62, 0 )
+scale = Vector2( 1, 0.5 )
+shape = SubResource( 9 )
+disabled = true
+
+[node name="Base" parent="." index="2"]
+rotation = 1.5708
+shape = SubResource( 10 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+anims/fast_turn_around = SubResource( 11 )
+anims/howl = SubResource( 12 )
+anims/idle = SubResource( 13 )
+anims/jaw_attack = SubResource( 14 )
+anims/prepare_jaw_attack = SubResource( 15 )
+anims/prepare_rush = SubResource( 16 )
+anims/run = SubResource( 17 )
+anims/rush = SubResource( 18 )
+anims/swipe = SubResource( 19 )
+anims/turn_around = SubResource( 20 )
+anims/walk = SubResource( 21 )
+anims/whirlwind = SubResource( 22 )
+script = ExtResource( 10 )
+
+[node name="Feet" type="KinematicBody2D" parent="." index="4"]
+script = ExtResource( 8 )
+
+[node name="Back Back Foot" type="CollisionShape2D" parent="Feet" index="0"]
+position = Vector2( -33, -5 )
+rotation = 1.5708
+shape = SubResource( 23 )
+
+[node name="Front Back Foot" type="CollisionShape2D" parent="Feet" index="1"]
+position = Vector2( -81, 3 )
+rotation = 1.5708
+shape = SubResource( 24 )
+
+[node name="Back Front Foot" type="CollisionShape2D" parent="Feet" index="2"]
+position = Vector2( 68, -5 )
+rotation = 1.5708
+shape = SubResource( 25 )
+
+[node name="Front Front Foot" type="CollisionShape2D" parent="Feet" index="3"]
+position = Vector2( 56, 3 )
+rotation = 1.5708
+shape = SubResource( 26 )
+
+[node name="ActionBuffer" type="Node" parent="." index="5"]
+script = ExtResource( 5 )
+
+[node name="AI" type="Node" parent="." index="6"]
+script = ExtResource( 13 )
+body = NodePath("..")
+state_machine = NodePath("../StateMachine")
+action_buffer = NodePath("../ActionBuffer")
+look_direction = NodePath("../LookDirection")
+frames_per_tick = 3
+
+[node name="Behavior Tree" type="Node" parent="AI" index="0"]
+script = ExtResource( 3 )
+actor_node = NodePath("..")
+data = [ {
+"children": [ "Selector" ],
+"data": {
+"offset": Vector2( 240, 280 ),
+"size": Vector2( 89.9775, 89.9995 )
+},
+"name": "Root",
+"type": 0
+}, {
+"children": [ "Sequence8", "Selector2" ],
+"data": {
+"offset": Vector2( 440, 280 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Selector",
+"type": 1
+}, {
+"children": [ "Condition9", "Condition10", "Inverter3", "Selector7" ],
+"data": {
+"offset": Vector2( 620, -560 ),
+"size": Vector2( 107.001, 227 )
+},
+"name": "Sequence8",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"key_to_check": "target"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/blackboard_has_key.gd"
+},
+"data": {
+"offset": Vector2( 880, -800 ),
+"size": Vector2( 225.004, 123.001 ),
+"text": "Has Target"
+},
+"name": "Condition9",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"actor_function": "is_provoked"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/query_actor_function.gd"
+},
+"data": {
+"offset": Vector2( 880, -660 ),
+"size": Vector2( 225.004, 123 ),
+"text": "Provoked"
+},
+"name": "Condition10",
+"type": 10
+}, {
+"children": [ "Condition11" ],
+"data": {
+"offset": Vector2( 820, -520 ),
+"size": Vector2( 96, 88.0012 )
+},
+"name": "Inverter3",
+"type": 5
+}, {
+"bdata": {
+"script_data": {
+"actor_function": "is_combat_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/query_actor_function.gd"
+},
+"data": {
+"offset": Vector2( 960, -520 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Combat CD?"
+},
+"name": "Condition11",
+"type": 10
+}, {
+"children": [ "Sequence9", "Sequence10", "Sequence11" ],
+"data": {
+"offset": Vector2( 1080, -340 ),
+"size": Vector2( 107, 200 )
+},
+"name": "Selector7",
+"type": 1
+}, {
+"children": [ "Condition12", "Selector8", "Action14" ],
+"data": {
+"offset": Vector2( 1240, -1520 ),
+"size": Vector2( 107, 200 )
+},
+"name": "Sequence9",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"max_distance": 125.0,
+"position_key": "position",
+"target_key": "target_actual_position"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/in_range_of_target.gd"
+},
+"data": {
+"offset": Vector2( 1460, -2160 ),
+"size": Vector2( 225, 123 ),
+"text": "Close Range"
+},
+"name": "Condition12",
+"type": 10
+}, {
+"children": [ "Sequence16", "Sequence13", "Sequence15" ],
+"data": {
+"offset": Vector2( 1460, -1620 ),
+"size": Vector2( 107, 200 )
+},
+"name": "Selector8",
+"type": 1
+}, {
+"children": [ "Inverter5", "Action35", "Action36", "Action37" ],
+"data": {
+"offset": Vector2( 1620, -2020 ),
+"size": Vector2( 107, 227 )
+},
+"name": "Sequence16",
+"type": 2
+}, {
+"children": [ "Condition17" ],
+"data": {
+"offset": Vector2( 1800, -2300 ),
+"size": Vector2( 96, 88.0005 )
+},
+"name": "Inverter5",
+"type": 5
+}, {
+"bdata": {
+"script_data": {
+"actor_function": "is_howl_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/query_actor_function.gd"
+},
+"data": {
+"offset": Vector2( 1920, -2300 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Howl Cooldown"
+},
+"name": "Condition17",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"arg": "special_attack",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1860, -2160 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Howl"
+},
+"name": "Action35",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "special_attack",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1860, -2020 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Release Action"
+},
+"name": "Action36",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"float_arg": 30.0,
+"function_name": "set_howl_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_float_input.gd"
+},
+"data": {
+"offset": Vector2( 1860, -1880 ),
+"size": Vector2( 225, 123.002 ),
+"text": "Set Howl Cooldown"
+},
+"name": "Action37",
+"type": 9
+}, {
+"children": [ "Selector9", "Action27", "Action12", "Action13" ],
+"data": {
+"offset": Vector2( 2180, -1720 ),
+"size": Vector2( 107, 227 )
+},
+"name": "Sequence13",
+"type": 2
+}, {
+"children": [ "Inverter4", "Condition16" ],
+"data": {
+"offset": Vector2( 2400, -2080 ),
+"size": Vector2( 107, 173.002 )
+},
+"name": "Selector9",
+"type": 1
+}, {
+"children": [ "Condition15" ],
+"data": {
+"offset": Vector2( 2600, -2100 ),
+"size": Vector2( 96, 88.001 )
+},
+"name": "Inverter4",
+"type": 5
+}, {
+"bdata": {
+"script_data": {
+"actor_function": "is_looking_at",
+"blackboard_key": "target_actual_position"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/query_actor_function_bb_arg.gd"
+},
+"data": {
+"offset": Vector2( 2720, -2100 ),
+"size": Vector2( 225, 144.001 ),
+"text": "Is Looking At"
+},
+"name": "Condition15",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"max_distance": 60.0,
+"position_key": "position",
+"target_key": "target_actual_position"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/in_range_of_target.gd"
+},
+"data": {
+"offset": Vector2( 2620, -1940 ),
+"size": Vector2( 225, 123.002 ),
+"text": "Target Underneath"
+},
+"name": "Condition16",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"arg": "run",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2360, -1800 ),
+"size": Vector2( 225, 123.002 ),
+"text": "Release Run"
+},
+"name": "Action27",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "attack",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2360, -1680 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Whirlwind"
+},
+"name": "Action12",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "attack",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2360, -1560 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Release Action"
+},
+"name": "Action13",
+"type": 9
+}, {
+"children": [ "Action33", "Action34" ],
+"data": {
+"offset": Vector2( 1700, -1520 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Sequence15",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"arg": "light_attack",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1860, -1540 ),
+"size": Vector2( 225, 123 ),
+"text": "Swipe"
+},
+"name": "Action33",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "light_attack",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1860, -1420 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Release Action"
+},
+"name": "Action34",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"float_arg": 3,
+"function_name": "set_combat_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_float_input.gd"
+},
+"data": {
+"offset": Vector2( 1440, -1280 ),
+"size": Vector2( 225, 123 ),
+"text": "Set Cooldown"
+},
+"name": "Action14",
+"type": 9
+}, {
+"children": [ "Condition13", "Selector10", "Action19" ],
+"data": {
+"offset": Vector2( 1700, -700 ),
+"size": Vector2( 107, 200.001 )
+},
+"name": "Sequence10",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"max_distance": 400.0,
+"position_key": "position",
+"target_key": "target_actual_position"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/in_range_of_target.gd"
+},
+"data": {
+"offset": Vector2( 1920, -1280 ),
+"size": Vector2( 225, 123 ),
+"text": "Medium Range"
+},
+"name": "Condition13",
+"type": 10
+}, {
+"children": [ "Sequence17", "Sequence14" ],
+"data": {
+"offset": Vector2( 1880, -800 ),
+"size": Vector2( 107, 173.001 )
+},
+"name": "Selector10",
+"type": 1
+}, {
+"children": [ "Inverter6", "Action38", "Action39", "Action40" ],
+"data": {
+"offset": Vector2( 2020, -1120 ),
+"size": Vector2( 107, 227.001 )
+},
+"name": "Sequence17",
+"type": 2
+}, {
+"children": [ "Condition18" ],
+"data": {
+"offset": Vector2( 2200, -1260 ),
+"size": Vector2( 96, 88.0005 )
+},
+"name": "Inverter6",
+"type": 5
+}, {
+"bdata": {
+"script_data": {
+"actor_function": "is_howl_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/query_actor_function.gd"
+},
+"data": {
+"offset": Vector2( 2340, -1260 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Howl Cooldown?"
+},
+"name": "Condition18",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"arg": "special_attack",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2220, -1140 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Howl"
+},
+"name": "Action38",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "special_attack",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2220, -1020 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Release Action"
+},
+"name": "Action39",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"float_arg": 30.0,
+"function_name": "set_howl_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_float_input.gd"
+},
+"data": {
+"offset": Vector2( 2220, -900 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Howl Cooldown"
+},
+"name": "Action40",
+"type": 9
+}, {
+"children": [ "Action15", "Action16", "Action17", "Action18", "Action28", "Action32", "Action31", "Action29", "Action30" ],
+"data": {
+"offset": Vector2( 2480, -700 ),
+"size": Vector2( 107, 362.001 )
+},
+"name": "Sequence14",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"heading_key": "target_direction",
+"position_key": "position",
+"target_key": "target"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/get_heading.gd"
+},
+"data": {
+"offset": Vector2( 2720, -1240 ),
+"size": Vector2( 225, 123.002 ),
+"text": "Get Heading"
+},
+"name": "Action15",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"blackboard_key": "target_direction",
+"property_name": "target_direction"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/set_property_to_bb_value.gd"
+},
+"data": {
+"offset": Vector2( 2720, -1120 ),
+"size": Vector2( 225, 123.002 ),
+"text": "Face Target"
+},
+"name": "Action16",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "heavy_attack",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2720, -1000 ),
+"size": Vector2( 225, 123.002 ),
+"text": "Jaw"
+},
+"name": "Action17",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "heavy_attack",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2720, -880 ),
+"size": Vector2( 225, 123 ),
+"text": "Release Action"
+},
+"name": "Action18",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"delta_key": "delta",
+"seconds_to_wait": 1.3
+},
+"script_path": "res://Utils/Behavior Tree/Actions/wait.gd"
+},
+"data": {
+"offset": Vector2( 2720, -760 ),
+"size": Vector2( 225, 123 ),
+"text": "Wait"
+},
+"name": "Action28",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"heading_key": "target_direction",
+"position_key": "position",
+"target_key": "target"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/get_heading.gd"
+},
+"data": {
+"offset": Vector2( 2720, -640 ),
+"size": Vector2( 225, 123 ),
+"text": "Get Heading"
+},
+"name": "Action32",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"blackboard_key": "target_direction",
+"property_name": "target_direction"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/set_property_to_bb_value.gd"
+},
+"data": {
+"offset": Vector2( 2720, -520 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Face Target"
+},
+"name": "Action31",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "heavy_attack",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2720, -400 ),
+"size": Vector2( 225, 123 ),
+"text": "Jaw"
+},
+"name": "Action29",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "heavy_attack",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 2720, -280 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Release Action"
+},
+"name": "Action30",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"float_arg": 2.5,
+"function_name": "set_combat_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_float_input.gd"
+},
+"data": {
+"offset": Vector2( 1920, -520 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Set Cooldown"
+},
+"name": "Action19",
+"type": 9
+}, {
+"children": [ "Condition14", "Action20", "Action21", "Sequence12" ],
+"data": {
+"offset": Vector2( 1320, -220 ),
+"size": Vector2( 107, 227 )
+},
+"name": "Sequence11",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"max_distance": 700.0,
+"position_key": "position",
+"target_key": "target"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/in_range_of_target.gd"
+},
+"data": {
+"offset": Vector2( 1500, -360 ),
+"size": Vector2( 225, 123 ),
+"text": "Long Range"
+},
+"name": "Condition14",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"heading_key": "target_direction",
+"position_key": "position",
+"target_key": "target_actual_position"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/get_heading.gd"
+},
+"data": {
+"offset": Vector2( 1500, -240 ),
+"size": Vector2( 225, 123 ),
+"text": "Get Heading"
+},
+"name": "Action20",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"blackboard_key": "target_direction",
+"property_name": "target_direction"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/set_property_to_bb_value.gd"
+},
+"data": {
+"offset": Vector2( 1500, -120 ),
+"size": Vector2( 225, 123 ),
+"text": "Face Target"
+},
+"name": "Action21",
+"type": 9
+}, {
+"children": [ "Action22", "Action23", "Action24", "Action25", "Action26" ],
+"data": {
+"offset": Vector2( 1660, 20 ),
+"size": Vector2( 107, 254 )
+},
+"name": "Sequence12",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"arg": "run",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1880, -280 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Hold Run"
+},
+"name": "Action22",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "attack",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1880, -160 ),
+"size": Vector2( 225, 123 ),
+"text": "Rush"
+},
+"name": "Action23",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "attack",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1880, -40 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Release Attack"
+},
+"name": "Action24",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"arg": "run",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1880, 80 ),
+"size": Vector2( 225, 123 ),
+"text": "Release Run"
+},
+"name": "Action25",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"float_arg": 2.5,
+"function_name": "set_combat_cooldown"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_float_input.gd"
+},
+"data": {
+"offset": Vector2( 2120, 200 ),
+"size": Vector2( 225, 123 ),
+"text": "Set Cooldown"
+},
+"name": "Action26",
+"type": 9
+}, {
+"children": [ "Sequence5", "Sequence2", "Sequence" ],
+"data": {
+"offset": Vector2( 720, 1240 ),
+"size": Vector2( 107.001, 200 )
+},
+"name": "Selector2",
+"type": 1
+}, {
+"children": [ "Condition3", "Condition8", "Selector4", "Selector5" ],
+"data": {
+"offset": Vector2( 1000, 640 ),
+"size": Vector2( 107, 227 )
+},
+"name": "Sequence5",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"key_to_check": "target"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/blackboard_has_key.gd"
+},
+"data": {
+"offset": Vector2( 1160, 160 ),
+"size": Vector2( 225, 123.002 ),
+"text": "Has Target"
+},
+"name": "Condition3",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"actor_function": "is_provoked"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/query_actor_function.gd"
+},
+"data": {
+"offset": Vector2( 1180, 360 ),
+"size": Vector2( 225, 123 ),
+"text": "Provoked?"
+},
+"name": "Condition8",
+"type": 10
+}, {
+"children": [ "Condition4", "Condition5", "Action7" ],
+"data": {
+"offset": Vector2( 1540, 340 ),
+"size": Vector2( 107, 200 )
+},
+"name": "Selector4",
+"type": 1
+}, {
+"bdata": {
+"script_data": {
+"max_distance": 500.0,
+"position_key": "position",
+"target_key": "target"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/in_range_of_target.gd"
+},
+"data": {
+"offset": Vector2( 1760, 280 ),
+"size": Vector2( 225, 123 ),
+"text": "Target Far"
+},
+"name": "Condition4",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"action": "run",
+"function_name": "is_action_pressed"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/action_held.gd"
+},
+"data": {
+"offset": Vector2( 1760, 400 ),
+"size": Vector2( 225, 123 ),
+"text": "Run Button Held"
+},
+"name": "Condition5",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"arg": "run",
+"function_name": "press_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1760, 520 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Press Run Button"
+},
+"name": "Action7",
+"type": 9
+}, {
+"children": [ "Sequence6", "Sequence7" ],
+"data": {
+"offset": Vector2( 1200, 920 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Selector5",
+"type": 1
+}, {
+"children": [ "Condition6", "Selector6", "Action8" ],
+"data": {
+"offset": Vector2( 1340, 800 ),
+"size": Vector2( 107, 200 )
+},
+"name": "Sequence6",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"max_distance": 150.0,
+"position_key": "position",
+"target_key": "target_actual_position"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/in_range_of_target.gd"
+},
+"data": {
+"offset": Vector2( 1480, 600 ),
+"size": Vector2( 225, 123 ),
+"text": "Beside Target"
+},
+"name": "Condition6",
+"type": 10
+}, {
+"children": [ "Inverter2", "Action9" ],
+"data": {
+"offset": Vector2( 1560, 740 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Selector6",
+"type": 1
+}, {
+"children": [ "Condition7" ],
+"data": {
+"offset": Vector2( 1720, 720 ),
+"size": Vector2( 95.9999, 88.001 )
+},
+"name": "Inverter2",
+"type": 5
+}, {
+"bdata": {
+"script_data": {
+"action": "run",
+"function_name": "is_action_pressed"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/action_held.gd"
+},
+"data": {
+"offset": Vector2( 1860, 720 ),
+"size": Vector2( 225, 123.001 ),
+"text": "Run Button Held"
+},
+"name": "Condition7",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"arg": "run",
+"function_name": "release_action"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_function_string_input.gd"
+},
+"data": {
+"offset": Vector2( 1860, 860 ),
+"size": Vector2( 225, 123 ),
+"text": "Release Run Button"
+},
+"name": "Action9",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"property_name": "target_direction",
+"x_value": 0.0,
+"y_value": 0.0
+},
+"script_path": "res://Utils/Behavior Tree/Actions/set_actor_vector_2_value.gd"
+},
+"data": {
+"offset": Vector2( 1480, 940 ),
+"size": Vector2( 225, 123 ),
+"text": "Stop"
+},
+"name": "Action8",
+"type": 9
+}, {
+"children": [ "Action10", "Action11" ],
+"data": {
+"offset": Vector2( 1680, 1100 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Sequence7",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"heading_key": "target_direction",
+"position_key": "position",
+"target_key": "target"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/get_heading.gd"
+},
+"data": {
+"offset": Vector2( 1840, 1040 ),
+"size": Vector2( 225, 123 ),
+"text": "Get Heading"
+},
+"name": "Action10",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"blackboard_key": "target_direction",
+"property_name": "target_direction"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/set_property_to_bb_value.gd"
+},
+"data": {
+"offset": Vector2( 1840, 1180 ),
+"size": Vector2( 225, 123 ),
+"text": "Head Towards Target"
+},
+"name": "Action11",
+"type": 9
+}, {
+"children": [ "Selector3", "Sequence3", "Inverter" ],
+"data": {
+"offset": Vector2( 1000, 1520 ),
+"size": Vector2( 107, 200 )
+},
+"name": "Sequence2",
+"type": 2
+}, {
+"children": [ "Condition", "Action6" ],
+"data": {
+"offset": Vector2( 1240, 1320 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Selector3",
+"type": 1
+}, {
+"bdata": {
+"script_data": {
+"key_to_check": "waypoint"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/blackboard_has_key.gd"
+},
+"data": {
+"offset": Vector2( 1420, 1200 ),
+"size": Vector2( 225, 123 ),
+"text": "Has Waypoint"
+},
+"name": "Condition",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"actor_function": "find_waypoint"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/call_actor_function.gd"
+},
+"data": {
+"offset": Vector2( 1420, 1340 ),
+"size": Vector2( 225, 123 ),
+"text": "Find Waypoint"
+},
+"name": "Action6",
+"type": 9
+}, {
+"children": [ "Action3", "Action4" ],
+"data": {
+"offset": Vector2( 1240, 1520 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Sequence3",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"heading_key": "target_direction",
+"position_key": "position",
+"target_key": "waypoint"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/get_heading.gd"
+},
+"data": {
+"offset": Vector2( 1440, 1480 ),
+"size": Vector2( 225, 123 ),
+"text": "Get Waypoint Heading"
+},
+"name": "Action3",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"blackboard_key": "target_direction",
+"property_name": "target_direction"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/set_property_to_bb_value.gd"
+},
+"data": {
+"offset": Vector2( 1440, 1620 ),
+"size": Vector2( 225, 123 ),
+"text": "Move Towards Waypoint"
+},
+"name": "Action4",
+"type": 9
+}, {
+"children": [ "Sequence4" ],
+"data": {
+"offset": Vector2( 1240, 1760 ),
+"size": Vector2( 96, 88 )
+},
+"name": "Inverter",
+"type": 5
+}, {
+"children": [ "Condition2", "Action5" ],
+"data": {
+"offset": Vector2( 1420, 1760 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Sequence4",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"max_distance": 50.0,
+"position_key": "position",
+"target_key": "waypoint"
+},
+"script_path": "res://Utils/Behavior Tree/Conditions/in_range_of_target.gd"
+},
+"data": {
+"offset": Vector2( 1720, 1700 ),
+"size": Vector2( 225, 123 ),
+"text": "Reached Waypoint"
+},
+"name": "Condition2",
+"type": 10
+}, {
+"bdata": {
+"script_data": {
+"key_to_delete": "waypoint"
+},
+"script_path": "res://Utils/Behavior Tree/Actions/delete_blackboard_key.gd"
+},
+"data": {
+"offset": Vector2( 1720, 1840 ),
+"size": Vector2( 225, 123 ),
+"text": "Delete Waypoint"
+},
+"name": "Action5",
+"type": 9
+}, {
+"children": [ "Action", "Action2" ],
+"data": {
+"offset": Vector2( 1000, 1980 ),
+"size": Vector2( 107, 173 )
+},
+"name": "Sequence",
+"type": 2
+}, {
+"bdata": {
+"script_data": {
+"property_name": "target_direction",
+"x_value": 0.0,
+"y_value": 0.0
+},
+"script_path": "res://Utils/Behavior Tree/Actions/set_actor_vector_2_value.gd"
+},
+"data": {
+"offset": Vector2( 1320, 1980 ),
+"size": Vector2( 225, 123 ),
+"text": "Idle"
+},
+"name": "Action",
+"type": 9
+}, {
+"bdata": {
+"script_data": {
+"delta_key": "delta",
+"seconds_to_wait": 2.5
+},
+"script_path": "res://Utils/Behavior Tree/Actions/wait.gd"
+},
+"data": {
+"offset": Vector2( 1320, 2120 ),
+"size": Vector2( 225, 123 ),
+"text": "Wait"
+},
+"name": "Action2",
+"type": 9
+} ]
+active = true
+
+[node name="LookDirection" type="Node" parent="." index="7"]
+script = ExtResource( 7 )
+
+[node name="StateMachine" type="Node" parent="." index="8"]
+script = ExtResource( 4 )
+_active = true
+
+[node name="Idle" parent="StateMachine" index="0" instance=ExtResource( 6 )]
+dependencies = {
+"body": NodePath("../.."),
+"buffer": NodePath("../../ActionBuffer"),
+"input": NodePath("../../AI"),
+"look": NodePath("../../LookDirection")
+}
+variables = {
+"max_speed": 300
+}
+
+[node name="Walk" parent="StateMachine" index="1" instance=ExtResource( 11 )]
+dependencies = {
+"body": NodePath("../.."),
+"buffer": NodePath("../../ActionBuffer"),
+"input": NodePath("../../AI"),
+"look": NodePath("../../LookDirection")
+}
+variables = {
+"max_speed": 300
+}
+
+[node name="Run" parent="StateMachine" index="2" instance=ExtResource( 12 )]
+dependencies = {
+"body": NodePath("../.."),
+"buffer": NodePath("../../ActionBuffer"),
+"input": NodePath("../../AI"),
+"look": NodePath("../../LookDirection")
+}
+variables = {
+"max_speed": 600
+}
+
+[node name="TurnAround" parent="StateMachine" index="3" instance=ExtResource( 14 )]
+dependencies = {
+"body": NodePath("../.."),
+"buffer": NodePath("../../ActionBuffer")
+}
+
+[node name="FastTurnAround" parent="StateMachine" index="4" instance=ExtResource( 15 )]
+dependencies = {
+"buffer": NodePath("../../ActionBuffer")
+}
+
+[node name="PrepareJawAttack" parent="StateMachine" index="5" instance=ExtResource( 16 )]
+dependencies = {
+"body": NodePath("../.."),
+"input": NodePath("../../AI"),
+"look": NodePath("../../LookDirection")
+}
+
+[node name="JawAttack" parent="StateMachine" index="6" instance=ExtResource( 17 )]
+dependencies = {
+"body": NodePath("../.."),
+"buffer": NodePath("../../ActionBuffer"),
+"input": NodePath("../../AI"),
+"look": NodePath("../../LookDirection")
+}
+variables = {
+"max_distance": 200
+}
+
+[node name="Howl" parent="StateMachine" index="7" instance=ExtResource( 18 )]
+overwrite = false
+dependencies = {
+"body": NodePath("../..")
+}
+
+[node name="PrepareRush" parent="StateMachine" index="8" instance=ExtResource( 19 )]
+dependencies = {
+"body": NodePath("../.."),
+"input": NodePath("../../AI"),
+"look": NodePath("../../LookDirection")
+}
+
+[node name="Rush" parent="StateMachine" index="9" instance=ExtResource( 20 )]
+overwrite = true
+dependencies = {
+"body": NodePath("../.."),
+"input": NodePath("../../AI"),
+"look": NodePath("../../LookDirection"),
+"shape": NodePath("../../Z Pos/Rush/CollisionShape2D")
+}
+variables = {
+"duration": 0.5,
+"max_distance": 800
+}
+
+[node name="Swipe" parent="StateMachine" index="10" instance=ExtResource( 21 )]
+dependencies = {
+"body": NodePath("../..")
+}
+
+[node name="Whirlwind" parent="StateMachine" index="11" instance=ExtResource( 22 )]
+dependencies = {
+"body": NodePath("../..")
+}
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." index="9"]
+
+[node name="Shockwave" type="ColorRect" parent="CanvasLayer" index="0"]
+visible = false
+material = SubResource( 28 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -640.0
+margin_top = -360.0
+margin_right = 640.0
+margin_bottom = 360.0
+script = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+body_node = NodePath("../..")
+
+[node name="Shockwave" type="AnimationPlayer" parent="CanvasLayer/Shockwave" index="0"]
+anims/shockwave = SubResource( 29 )
+[connection signal="animation_finished" from="AnimationPlayer" to="StateMachine" method="_on_AnimationPlayer_animation_finished"]
+[connection signal="x_direction_changed" from="LookDirection" to="Z Pos/Sprite" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="Z Pos/Jaw Attack" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="Z Pos/Rush" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="Z Pos/Swipe" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="Z Pos/Howl" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="Z Pos/Whirlwind" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="Feet" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="CanvasLayer/Shockwave" method="_on_LookDirection_x_direction_changed"]
+[connection signal="x_direction_changed" from="LookDirection" to="AI" method="_on_LookDirection_x_direction_changed"]
+[connection signal="state_changed" from="StateMachine" to="AnimationPlayer" method="_on_StateMachine_state_changed"]

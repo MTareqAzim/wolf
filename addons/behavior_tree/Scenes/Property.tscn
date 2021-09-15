@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/behavior_tree/Scenes/property.gd" type="Script" id=1]
+
+[node name="Property" type="HBoxContainer"]
+margin_right = 96.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 250, 24 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="Label" parent="."]
+margin_top = 5.0
+margin_right = 80.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 80, 0 )
+hint_tooltip = "Property Name:"
+mouse_filter = 1
+text = "Property Name:"
+clip_text = true
+
+[node name="LineEdit" type="LineEdit" parent="."]
+margin_left = 84.0
+margin_right = 250.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+[connection signal="text_entered" from="LineEdit" to="." method="_on_LineEdit_text_entered"]
